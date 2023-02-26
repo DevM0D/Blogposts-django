@@ -1,0 +1,149 @@
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://kit.fontawesome.com/396f5d1069.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+
+
+
+<Header> 
+
+    <!-- Navbar --> 
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark m-0">
+        <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}"> B Blog</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            
+            </ul>
+            {% if user.is_authenticated %}
+            <form class="d-flex  justify-content-between" role="search">
+                <a class="btn btn-outline-danger m-1" href="{% url 'logout' %}"> Logout</a>
+                </form>
+
+            {% else %}
+                <form class="d-flex  justify-content-between" role="search">
+                    <a class="btn btn-outline-danger m-1" href=" {% url 'sign' %} ">Sign-Up </a>
+                    <a class="btn btn-outline-success m-1" href="{% url 'login' %}"> Log-In </a>
+                    </form>
+            {% endif %}}}
+        </div>
+        </div>
+    </nav>
+    
+
+
+  
+
+</Header>
+
+<div class="p-5">
+    
+    <h1 class="pt-5"> <a href="{% url 'home' %}" class="btn btn-primary">Back</a> Blog</h1>
+
+    <hr> 
+    <!-- current user: {{ user.id }}
+    post author : {{ post.author.id }} -->
+    
+     <h1>{{ post.title }}</h1>  by: {{ post.author }} <hr> 
+        <div class="row "> 
+            <div class="col">
+                <img src="{{ post.imgup.url }}" width="410" height="200" />
+            </div>
+            <div class="col">
+        {% if user.id == post.author.id %}
+                    <div class="row p-5 align-content-start">
+                        
+
+                        <div class="col-lg-1">
+                            <a href="{% url 'edit' post.pk %}" class="btn btn-primary">Edit</a>
+                        </div>
+                        <div class="col-lg-1">
+                            <a href="{% url 'delete-post' post.pk %}" class="btn btn-primary">Delete</a>
+                        </div>
+                    </div>
+        {% endif %} 
+            </div>
+        </div>
+
+        {{ post.body }}  - <hr>
+        
+        <div class="row">
+            <div class="col">
+
+             Puplish Date:   {{ post.post_date }}
+            </div>  
+
+            
+           <div class="col">
+            {% if user.is_authenticated %}
+
+            <div class="col-lg-12 mt-3">
+                <form action ="{% url 'like_post' post.pk %}" method= "POST">
+                 {% csrf_token %}
+                 <button type="submit" name="post_id" value="{{ post.id }}" class=" btn btn-success">
+                    <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>  {{ total_likes }}</button>
+
+                 {% comment %} {% if liked %}
+                 <button type="submit" name="post_id" value="{{ post.id }}" class=" btn btn-danger">
+                    <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>  {{ total_likes }}</button>
+                {% else %}
+                <button type="submit" name="post_id" value="{{ post.id }}" class=" btn btn-success">
+                    <i onclick="myFunction(this)" class="fa fa-thumbs-up"></i>  {{ total_likes }}</button>
+                 {% endif %} {% endcomment %}
+                 
+             
+                {% comment %} <form action ="{% url 'dislike_post' post.pk %}" method= "POST">
+                 {% csrf_token %}
+                 
+                 <button type="submit" name="post_id" value="{{ post.id }}" class=" btn btn-danger">
+                    <i onclick="myFunction(this)" class="fa fa-thumbs-down"></i>  {{ total_dislikes }}</button> {% endcomment %}
+             </div> 
+
+           {% endif %}
+
+           </div>
+            
+        </div>
+
+        <div class="row">
+            <h1>Comments...</h1>
+            <br/>
+            {% if not post.coments.all %}
+           
+                No Comments yet ...  {% if user.is_authenticated %}
+                                    <a href="{% url 'add_comments' post.pk %}">Add Comment</a>
+                                     {% endif %}
+            {% else %}
+
+                                    {% if user.is_authenticated %}
+                                    <a href="{% url 'add_comments' post.pk %}">Add Comment</a>
+                                     {% endif %}
+            <br/><br/>
+                {% for Coment in post.coments.all  %}
+                    <strong>
+                    {{ Coment.name }}-
+                    {{ Coment.date_added }}
+                    </strong>
+                    <br/>
+                    {{ Coment.body }}
+                </br> </br>
+                <hr>
+                    {% endfor %}
+            {% endif %}
+         </div>
+    
+   
+    
+    
+     
+    
+</div>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head> 
+    <title>
+      
+    </title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'staticfiles/images' %}">
+    
+    
+</head>
+
+
+{% block Header%}
+
+<Header> 
+
+    <!-- Navbar --> 
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark m-0">
+        <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Blog Page</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                
+            
+            </ul>
+            {% if user.is_authenticated %}
+
+               
+                {% if user.is_staff  %}
+                <form class="d-flex  justify-content-between" role="search">
+                    <a class="navbar-brand text-center" href="{% url 'admin_redirect' %}">Admin Site</a>
+                    <a class="navbar-brand text-center" href="{% url 'add' %}">Add post</a>
+                    <a class="navbar-brand text-center" href="{% url 'add-catagory' %}">Add Catagory</a>
+                {% endif %}
+                    
+               
+                    <a class="btn btn-outline-danger m-1" href="{% url 'logout' %}"> Logout</a>
+                </form>
+
+            {% else %}
+                <form class="d-flex  justify-content-between" role="search">
+                    <a class="btn btn-outline-danger m-1" href=" {% url 'sign' %} ">Sign-Up </a>
+                    <a class="btn btn-outline-success m-1" href="{% url 'login' %}"> Log-In </a>
+                    </form>
+            {% endif %}}}
+            
+        </div>
+        </div>
+    </nav>
+    
+
+
+  
+
+</Header>
+{% endblock %}
+
+<body>
+    <div class=""> 
+    {% block content%}
+    <div class="container-fluid mt-4">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5 d-none d-sm-inline">Menu</span>
+                </a>
+                
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                    
+                    <li>
+                        
+                            <a class="navbar-brand"  style="color: white;" href="/blogapp/catagoriesview"><span class="ms-1 d-none d-sm-inline">Categories:</span> </a>
+                        <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                            <li class="w-100">
+                                <a href="../blogapp/catagories/sports" class="nav-link px-0"> <span class="d-none d-sm-inline">Sports</span> </a>
+                           
+                            </li>
+                            <li>
+                                <a href="../blogapp/catagories/cars" class="nav-link px-0"> <span class="d-none d-sm-inline">Cars</span> </a>
+                            </li>
+                            <li>
+                                <a href="../blogapp/catagories/media" class="nav-link px-0"> <span class="d-none d-sm-inline">Media</span> </a>
+                            </li>
+                            <li>
+                                <a href="../blogapp/catagories/hicking" class="nav-link px-0"> <span class="d-none d-sm-inline">Hicking</span> </a>
+                            </li>
+                            <li>
+                                <a href="../blogapp/catagories/coding" class="nav-link px-0"> <span class="d-none d-sm-inline">Coding</span> </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    
+                    
+                </ul>
+                <hr>
+                
+            </div>
+        </div>
+    
+    <div class="col py-3">
+                <main class="my-5">
+                    <div class="container">
+                      <!--Section: Content-->
+                      <section class="text-center">
+                        <h4 class="mb-5"><strong>Top posts</strong></h4>
+                
+                        
+                        <div class="row">
+                         {% for post  in object_list  %}
+                         
+                            <div class="col-lg-4 col-md-12 mb-4">
+                                <div class="card text-white bg-dark">
+                                    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                        <a href="{% url 'article' post.pk %}">
+                                        {% comment %} <img src="{{ post.imgup.url }}" width="410" height="200" />                                         {% endcomment %}
+                                       <img src="{{ post.imgup.url }}" width="410" height="200" />
+                                        </a>
+                                    </div>
+                                
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ post.title }} || {{ post.author }}</h5>
+                                            
+                                            <div class="row">
+                                                <div class="col">
+                                                    <a href="{% url 'catagories' post.catagory %}"> <h5 class="card-title p-2">{{post.catagory}} </h5></a> 
+                                                </div>
+                                                <div class="col">{{ post.post_date }} 
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col">
+                                                    <a href="{% url 'article' post.pk %}" class="btn btn-primary">View</a>
+                                                </div>
+                                                
+                                                {% if user.is_staff %}
+                                                <div class="col">
+                                                    <a href="{% url 'edit' post.pk %}" class="btn btn-primary">Edit</a>
+                                                </div>
+                                                <div class="col">
+                                                    <a href="{% url 'delete-post' post.pk %}" class="btn btn-primary">Delete</a>
+                                                </div>
+                                                {% endif %}
+                                               
+                                            </div>
+                                        </div>
+                                
+                                </div>
+                            </div>
+                          {% endfor %}
+
+    {% comment %} <li> <a href=" {% url 'article' post.pk %}">{{ post.title }} </a> - {{ post.author }}- {{ post.post_date }} <br> 
+        {{ post.body }}  - <a href="{% url 'add' %}">Add</a><a href="{% url 'edit' post.pk %}">Edit</a> <a href="{% url 'delete-post' post.pk %}">delete</a>
+
+    </li> {% endcomment %}
+
+
+    
+    </ul>
+    </div>
+    
+     
+    </div>
+  </main>
+  <!--Main layout-->
+
+  <!--Footer-->
+  <footer class="bg-light text-lg-start">
+    <div class="py-4 text-center">
+      <a role="button" class="btn btn-primary btn-lg m-2"
+        href="" rel="nofollow" target="_blank">
+       Footer
+      </a>
+    </div>
+
+    <hr class="m-0" />
+
+    
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      © 2020 Copyright:
+      <a class="text-dark" href="">Mod</a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!--Footer-->
+</div>
+</div>
+</div>
+
+    {% endblock %}
+
+
+    </div> 
+</body>
+
+ </html>
